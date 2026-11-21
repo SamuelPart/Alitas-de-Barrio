@@ -1,0 +1,9 @@
+# Dependencias locales (no usadas en el build)
+node_modules/
+
+# SO / editores
+.DS_Store
+Thumbs.db
+
+# Log internals
+*.log
