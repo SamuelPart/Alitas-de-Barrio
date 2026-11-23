@@ -166,6 +166,27 @@ vercel --prod
 
 ---
 
+## 📱 Código QR de la carta
+
+El QR apunta a **https://debarrioalitas.vercel.app**, con los módulos redondeados, los localizadores en degradado de fuego y el logo al centro sobre una tarjeta de vidrio.
+
+| Archivo | Uso |
+| --- | --- |
+| `public/img/qr-carta.png` | Web (2000 px) y uso general |
+| `design/qr-carta-print-3000.png` | Impresión: flyers, stickers, mesa (3000 px) |
+| `public/img/qr-carta-dark.png` | Versión oscura para pantallas del local |
+
+Para regenerarlo (por ejemplo con otro dominio):
+
+```bash
+pip install qrcode pillow numpy
+python3 design/make_qr.py https://tu-dominio.com
+```
+
+El script usa `ERROR_CORRECT_H` (30% de tolerancia) y una geometría validada para que los lectores
+estándar lo decodifiquen entre 280 y 2400 px. **No aumentes el radio de los localizadores ni el tamaño
+de la tarjeta central**: son los dos parámetros que rompen la lectura.
+
 ## ✏️ Cómo editar la carta y los precios
 
 Todo el catálogo vive en **`src/data/menu.js`**:

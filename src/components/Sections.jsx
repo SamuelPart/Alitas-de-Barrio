@@ -216,7 +216,33 @@ export function InfoSection() {
             listos para atenderte todas las noches.
           </motion.p>
 
-          <motion.div variants={reveal} className="mt-6 space-y-2.5">
+          {/* QR de la carta */}
+          <motion.div
+            variants={reveal}
+            className="mt-6 flex items-center gap-3.5 rounded-2xl border border-line bg-card/60 p-3"
+          >
+            <img
+              src="/img/qr-carta.png"
+              alt="Código QR de la carta digital de Alitas Barrio"
+              width="92"
+              height="92"
+              loading="lazy"
+              className="h-[76px] w-[76px] shrink-0 rounded-xl border border-line/70 sm:h-[88px] sm:w-[88px]"
+            />
+            <div className="min-w-0">
+              <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-fire-orange">
+                Escanea y pide
+              </p>
+              <p className="mt-0.5 text-[13px] font-semibold leading-snug text-cream">
+                Abre la carta en tu celular
+              </p>
+              <p className="mt-0.5 text-[11px] leading-relaxed text-cream/40">
+                Apunta la cámara al QR o compártelo con quien vaya a pedir.
+              </p>
+            </div>
+          </motion.div>
+
+          <motion.div variants={reveal} className="mt-3 space-y-2.5">
             {cards.map(({ Icon, label, value, hint, href }) => {
               const Wrapper = href ? 'a' : 'div'
               return (
