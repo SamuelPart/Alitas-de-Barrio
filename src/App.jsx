@@ -8,6 +8,8 @@ import CategoryTabs from './components/CategoryTabs'
 import ProductCard, { ProductsEmpty } from './components/ProductCard'
 import CartBar from './components/CartBar'
 import OrderDrawer from './components/OrderDrawer'
+import ComboBuilder from './components/ComboBuilder'
+import Showcase from './components/Showcase'
 import ScrollTopButton from './components/ScrollTopButton'
 import WhatsappFab from './components/WhatsappFab'
 import { Features, HowToOrder, InfoSection, Footer } from './components/Sections'
@@ -173,6 +175,19 @@ export default function App() {
             {business.phoneDisplay}
           </p>
         </section>
+
+        <Showcase />
+
+        <ComboBuilder
+          onAddCombo={(combo) =>
+            addItem({
+              id: combo.id,
+              name: combo.name,
+              price: combo.price,
+              image: combo.image,
+            })
+          }
+        />
 
         <Features />
         <HowToOrder />

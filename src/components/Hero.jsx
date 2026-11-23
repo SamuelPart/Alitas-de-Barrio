@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { Bike, Clock, MapPin, Search, Sparkles, X } from 'lucide-react'
 import { business, isOpenNow } from '../data/business'
 import Embers from './Embers'
+import IngredientStack from './IngredientStack'
 
 export default function Hero({ query, setQuery }) {
   const [open, setOpen] = useState(() => isOpenNow())
@@ -195,24 +196,26 @@ export default function Hero({ query, setQuery }) {
             </motion.form>
           </div>
 
-          {/* Logo grande decorativo */}
+          {/* Composición tipo ingredient-stack + logo */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.86, rotate: -3 }}
-            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
-            className="relative mx-auto hidden w-full max-w-[300px] md:block"
+            className="relative mx-auto w-full max-w-[340px] sm:max-w-[380px]"
           >
-            <div className="absolute inset-6 -z-10 rounded-full bg-fire-red/25 blur-3xl" />
-            <motion.img
-              src="/img/logo.png"
-              alt="Alitas Barrio — Un sabor diferente"
-              animate={{ y: [0, -9, 0] }}
-              transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-              className="mx-auto w-full drop-shadow-[0_24px_44px_rgba(229,57,53,0.35)]"
-              width="300"
-              height="341"
-            />
-            <div className="mt-2 flex items-center justify-center gap-2 text-[11px] font-medium uppercase tracking-[0.2em] text-cream/45">
+            <div className="relative">
+              <IngredientStack />
+              <motion.img
+                src="/img/logo.png"
+                alt="Logo Alitas Barrio"
+                animate={{ y: [0, -6, 0] }}
+                transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+                className="absolute -right-1 -top-3 h-16 w-auto drop-shadow-[0_14px_28px_rgba(229,57,53,0.45)] sm:h-20 sm:-right-3 sm:-top-4"
+                width="80"
+                height="91"
+              />
+            </div>
+            <div className="mt-5 flex items-center justify-center gap-2 text-[10.5px] font-medium uppercase tracking-[0.18em] text-cream/45">
               <Clock size={12} className="text-gold" />
               {business.scheduleFull}
             </div>

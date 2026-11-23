@@ -30,6 +30,10 @@
   - Drawer deslizable desde abajo en móviles con `AnimatePresence`.
   - Botón flotante para volver arriba.
 - **Hero compacto**: logo, badge animado de horario (*Delivery: 6:00 PM - 11:45 PM*), dirección exacta y **búsqueda instantánea** (tolerante a tildes y mayúsculas).
+- **Composición "ingredient stack"** en el hero: plato central con satélites (alitas, papas, cóctel) que se ensamblan con spring y se mueven con parallax al hacer scroll.
+- **Arma tu Combo** (`#arma-tu-combo`): armador interactivo en 3 pasos (Base → Acompañamiento → Cóctel). Cada elección recompone la pila de capas con `AnimatePresence`/`layout` y el total se actualiza animado. El combo se agrega directo al carrito y al mensaje de WhatsApp.
+- **Mosaico editorial** con parallax sutil por imagen.
+- **Fotografía retocada con IA** manteniendo los platos reales: misma composición y ángulo, con limpieza de texto/gráficos del fondo, iluminación de estudio y contraste mejorados.
 - **Carrito completo**
   - Barra flotante inferior con blur: contador de ítems, total en Soles y botón **Ver Pedido**.
   - Drawer para modificar cantidades, elegir **Delivery (6:00 PM - 11:45 PM)** o **Recojo en local**, ingresar **Nombre**, **Dirección/Referencia en Alto Trujillo** y **Método de pago** (*Yape / Plin* o *Efectivo*).
@@ -109,10 +113,14 @@ vercel --prod
 │   │   ├── OrderDrawer.jsx     # Drawer del pedido + checkout
 │   │   ├── ScrollTopButton.jsx # Volver arriba
 │   │   ├── WhatsappFab.jsx     # Acceso rápido a WhatsApp
+│   │   ├── ComboBuilder.jsx    # Arma tu Combo (ingredient stack interactivo)
+│   │   ├── IngredientStack.jsx # Composición del hero con parallax
+│   │   ├── Showcase.jsx        # Mosaico editorial con parallax
 │   │   ├── Sections.jsx        # Valores, cómo pedir, info y footer
 │   │   └── Embers.jsx          # Partículas de brasa
 │   ├── data/
 │   │   ├── menu.js             # ⚙️ Catálogo y precios editables
+│   │   ├── builder.js          # ⚙️ Opciones de "Arma tu Combo"
 │   │   └── business.js         # ⚙️ Datos del negocio
 │   ├── hooks/
 │   │   ├── useCart.js          # Carrito + localStorage
