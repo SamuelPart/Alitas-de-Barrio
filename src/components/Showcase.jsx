@@ -6,7 +6,8 @@ import { business, whatsappUrl } from '../data/business'
 const tiles = [
   {
     id: 'pollo',
-    image: '/img/pollo-brasa.jpg',
+    image: '/img/pollo-cut.png',
+    cutout: true,
     title: 'Pollo a la brasa',
     text: 'Cocción perfecta al carbón',
     className: 'col-span-2 row-span-2 sm:col-span-2 sm:row-span-2',
@@ -14,14 +15,16 @@ const tiles = [
   },
   {
     id: 'alitas',
-    image: '/img/promo-alitas.jpg',
+    image: '/img/alitas-cut.png',
+    cutout: true,
     title: 'Alitas glaseadas',
     text: 'Marinado con especias secretas',
     className: 'col-span-1 row-span-1',
   },
   {
     id: 'coctel',
-    image: '/img/coctel-azul.jpg',
+    image: '/img/azul-cut.png',
+    cutout: true,
     title: 'Cócteles',
     text: 'Frescos y frutales',
     className: 'col-span-1 row-span-1',

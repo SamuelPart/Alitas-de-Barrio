@@ -16,6 +16,8 @@ export const products = [
     name: 'Alitas + Chaufa + Papas Fritas',
     category: 'alitas',
     image: '/img/alitas-chaufa.jpg',
+    cutout: '/img/chaufa-cut-sm.png',
+    cutoutLg: '/img/pollo-cut.png',
     description:
       'Jugosas alitas doradas acompañadas de arroz chaufa y papas fritas crocantes',
     price: 18.0,
@@ -27,6 +29,8 @@ export const products = [
     name: 'Combo Alitas + Makis + Papas',
     category: 'alitas',
     image: '/img/promo-alitas.jpg',
+    cutout: '/img/alitas-cut-sm.png',
+    cutoutLg: '/img/alitas-cut.png',
     description:
       'Porción para compartir con alitas crujientes, rolls variados y papas fritas',
     price: 25.0,
@@ -38,6 +42,8 @@ export const products = [
     name: 'Pollo a la Brasa 1/4 con Papas',
     category: 'pollo',
     image: '/img/pollo-brasa.jpg',
+    cutout: '/img/pollo-cut-sm.png',
+    cutoutLg: '/img/pollo-cut.png',
     description:
       'Sabroso, jugoso y 100% peruano, cocción perfecta al carbón con papas y ensalada',
     price: 16.0,
@@ -49,6 +55,8 @@ export const products = [
     name: 'Pollo a la Brasa Entero Familiar',
     category: 'pollo',
     image: '/img/pollo-brasa.jpg',
+    cutout: '/img/pollo-cut-sm.png',
+    cutoutLg: '/img/pollo-cut.png',
     description:
       'Pollo entero al carbón ideal para compartir, incluye papas fritas y ensalada',
     price: 52.0,
@@ -60,6 +68,7 @@ export const products = [
     name: 'Piña Colada Especial',
     category: 'cocteles',
     image: '/img/pina-colada.jpg',
+    cutout: '/img/colada-cut-sm.png',
     description:
       'Cóctel cremoso y refrescante decorado con piña natural y cereza',
     price: 12.0,
@@ -71,6 +80,8 @@ export const products = [
     name: 'Laguna Azul',
     category: 'cocteles',
     image: '/img/coctel-azul.jpg',
+    cutout: '/img/azul-cut-sm.png',
+    cutoutLg: '/img/azul-cut.png',
     description: 'Cóctel frío y refrescante con toque cítrico, piña y cereza',
     price: 12.0,
     badge: 'Refrescante',

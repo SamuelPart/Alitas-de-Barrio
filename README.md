@@ -30,8 +30,9 @@
   - Drawer deslizable desde abajo en móviles con `AnimatePresence`.
   - Botón flotante para volver arriba.
 - **Hero compacto**: logo, badge animado de horario (*Delivery: 6:00 PM - 11:45 PM*), dirección exacta y **búsqueda instantánea** (tolerante a tildes y mayúsculas).
-- **Composición "ingredient stack"** en el hero: plato central con satélites (alitas, papas, cóctel) que se ensamblan con spring y se mueven con parallax al hacer scroll.
-- **Arma tu Combo** (`#arma-tu-combo`): armador interactivo en 3 pasos (Base → Acompañamiento → Cóctel). Cada elección recompone la pila de capas con `AnimatePresence`/`layout` y el total se actualiza animado. El combo se agrega directo al carrito y al mensaje de WhatsApp.
+- **Portada split** con el plato estrella **recortado sin fondo** (PNG transparente), flotando sobre un spotlight de brasa, con anillos orbitales, satélites y parallax suave.
+- **Productos sin fondo**: cada tarjeta muestra el recorte del platillo flotando sobre su sombra y un halo cálido, en vez de la foto rectangular.
+- **Arma tu Combo** (`#arma-tu-combo`): tarjeta de construcción en 3 pasos (Base → Acompañamiento → Cóctel) con barra de progreso. El **plato se descompone en ingredientes** que entran volando (base desde abajo, acompañamiento desde un lado, cóctel desde arriba), chips con la selección y total animado. El combo se agrega directo al carrito y al mensaje de WhatsApp.
 - **Mosaico editorial** con parallax sutil por imagen.
 - **Fotografía retocada con IA** manteniendo los platos reales: misma composición y ángulo, con limpieza de texto/gráficos del fondo, iluminación de estudio y contraste mejorados.
 - **Carrito completo**
@@ -107,6 +108,8 @@ vercel --prod
 │       ├── pina-colada.jpg     # Piña Colada Especial
 │       ├── coctel-azul.jpg     # Laguna Azul
 │       ├── hero-bg.jpg         # Fondo del hero
+│       ├── *-cut.png           # Recortes PNG sin fondo (portada, tarjetas y armador)
+│       ├── *-cut-sm.png        # Versión ligera de los recortes (tarjetas)
 │       ├── local.jpg           # Ambiente del local
 │       ├── og-image.jpg        # Imagen para redes sociales
 │       └── favicon.png

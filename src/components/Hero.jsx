@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { Bike, Clock, MapPin, Search, Sparkles, X } from 'lucide-react'
 import { business, isOpenNow } from '../data/business'
 import Embers from './Embers'
-import IngredientStack from './IngredientStack'
+import HeroArt from './HeroArt'
 
 export default function Hero({ query, setQuery }) {
   const [open, setOpen] = useState(() => isOpenNow())
@@ -45,7 +45,7 @@ export default function Hero({ query, setQuery }) {
       {/* Contenido hero compacto */}
       <div
         id="top"
-        className="relative mx-auto w-full max-w-6xl scroll-mt-20 px-4 pb-16 pt-24 sm:px-6 sm:pb-20 sm:pt-28"
+        className="relative mx-auto w-full max-w-6xl scroll-mt-20 px-4 pb-14 pt-24 sm:px-6 sm:pb-20 sm:pt-28"
       >
         <motion.div
           initial="hidden"
@@ -54,7 +54,7 @@ export default function Hero({ query, setQuery }) {
             hidden: {},
             show: { transition: { staggerChildren: 0.09, delayChildren: 0.05 } },
           }}
-          className="grid items-center gap-8 md:grid-cols-[1.15fr_0.85fr]"
+          className="grid items-center gap-7 md:grid-cols-[1fr_0.95fr] md:gap-10"
         >
           <div>
             <motion.div
@@ -196,27 +196,17 @@ export default function Hero({ query, setQuery }) {
             </motion.form>
           </div>
 
-          {/* Composición tipo ingredient-stack + logo */}
+          {/* Portada: plato flotante sin fondo */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
-            className="relative mx-auto w-full max-w-[340px] sm:max-w-[380px]"
+            variants={{
+              hidden: { opacity: 0, scale: 0.94 },
+              show: { opacity: 1, scale: 1, transition: { duration: 0.8 } },
+            }}
+            className="relative order-first w-full md:order-last"
           >
-            <div className="relative">
-              <IngredientStack />
-              <motion.img
-                src="/img/logo.png"
-                alt="Logo Alitas Barrio"
-                animate={{ y: [0, -6, 0] }}
-                transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-                className="absolute -right-1 -top-3 h-16 w-auto drop-shadow-[0_14px_28px_rgba(229,57,53,0.45)] sm:h-20 sm:-right-3 sm:-top-4"
-                width="80"
-                height="91"
-              />
-            </div>
-            <div className="mt-5 flex items-center justify-center gap-2 text-[10.5px] font-medium uppercase tracking-[0.18em] text-cream/45">
-              <Clock size={12} className="text-gold" />
+            <HeroArt />
+            <div className="mt-4 flex items-center justify-center gap-2 text-[10px] font-medium uppercase tracking-[0.16em] text-cream/40">
+              <Clock size={11} className="text-gold" />
               {business.scheduleFull}
             </div>
           </motion.div>

@@ -1,293 +1,369 @@
 import { useMemo, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Check, Flame, Plus, Sparkles, ShoppingBag, RotateCcw } from 'lucide-react'
+import {
+  Check,
+  Drumstick,
+  Martini,
+  Plus,
+  RotateCcw,
+  ShoppingBag,
+  Sparkles,
+  UtensilsCrossed,
+} from 'lucide-react'
 import { baseOptions, sideOptions, drinkOptions, builderNote } from '../data/builder'
 import { formatPrice } from '../utils/format'
 
 const steps = [
-  { key: 'base', label: 'Base', options: baseOptions },
-  { key: 'side', label: 'Acompañamiento', options: sideOptions },
-  { key: 'drink', label: 'Cóctel', options: drinkOptions },
+  { key: 'base', label: 'Base', Icon: Drumstick, options: baseOptions },
+  { key: 'side', label: 'Acompaña', Icon: UtensilsCrossed, options: sideOptions },
+  { key: 'drink', label: 'Cóctel', Icon: Martini, options: drinkOptions },
 ]
 
 /**
- * "Arma tu Combo": selector tipo ingredient-stack.
- * Cada capa entra desde abajo/arriba y el plato se recompone en vivo.
+ * "Arma tu combo" — tarjeta de construcción:
+ * el bloque central se descompone en ingredientes (base / acompañamiento / cóctel)
+ * con animación spring y los chips resumen la elección.
  */
 export default function ComboBuilder({ onAddCombo }) {
-  const [base, setBase] = useState(baseOptions[0])
-  const [side, setSide] = useState(sideOptions[0])
-  const [drink, setDrink] = useState(drinkOptions[2])
+  const [selection, setSelection] = useState({
+    base: baseOptions[0],
+    side: sideOptions[0],
+    drink: drinkOptions[2],
+  })
   const [step, setStep] = useState('base')
   const [added, setAdded] = useState(false)
 
   const total = useMemo(
-    () => base.price + side.price + drink.price,
-    [base.price, side.price, drink.price],
+    () =>
+      selection.base.price +
+      selection.side.price +
+      selection.drink.price,
+    [selection],
   )
 
-  const layers = useMemo(() => {
-    const list = []
-    if (drink.id !== 'sin-drink') {
-      list.push({ key: 'drink', image: drink.image, y: -46, rotate: -5, scale: 0.74, blur: false })
-    }
-    list.push({ key: 'side', image: side.image, y: 4, rotate: 3, scale: 0.95, blur: false })
-    list.push({ key: 'base', image: base.image, y: 46, rotate: -2, scale: 1.06, blur: false })
-    return list
-  }, [base, side, drink])
+  const chosen = useMemo(
+    () => [selection.base, selection.side, selection.drink].filter((o) => o.price > 0 || o.id !== 'sin-drink'),
+    [selection],
+  )
+
+  const pick = (key, option) => {
+    setSelection((current) => ({ ...current, [key]: option }))
+    const i = steps.findIndex((s) => s.key === key)
+    if (i < steps.length - 1) setTimeout(() => setStep(steps[i + 1].key), 180)
+  }
 
   const handleAdd = () => {
-    const parts = [base.name, side.name]
-    if (drink.id !== 'sin-drink') parts.push(drink.name)
+    const parts = [selection.base.name, selection.side.name]
+    if (selection.drink.id !== 'sin-drink') parts.push(selection.drink.name)
     onAddCombo({
-      id: `combo-${base.id}-${side.id}-${drink.id}`,
-      name: `Combo personalizado: ${parts.join(' + ')}`,
+      id: `combo-${selection.base.id}-${selection.side.id}-${selection.drink.id}`,
+      name: `Combo a tu medida: ${parts.join(' + ')}`,
       price: total,
-      image: base.image,
+      image: '/img/pollo-cut.png',
     })
     setAdded(true)
     setTimeout(() => setAdded(false), 1800)
   }
 
-  const reset = () => {
-    setBase(baseOptions[0])
-    setSide(sideOptions[0])
-    setDrink(drinkOptions[2])
-    setStep('base')
-  }
-
-  const current = steps.find((s) => s.key === step)
+  const activeIndex = steps.findIndex((s) => s.key === step)
 
   return (
     <section
       id="arma-tu-combo"
       className="relative mx-auto w-full max-w-6xl scroll-mt-20 px-4 py-12 sm:px-6 sm:py-16"
     >
-      <div className="mb-6 flex flex-col items-center text-center">
-        <motion.p
-          initial={{ opacity: 0, y: 8 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.24em] text-fire-orange"
-        >
+      <div className="mb-6 text-center">
+        <p className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.24em] text-fire-orange">
           <Sparkles size={13} /> Hecho a tu medida
-        </motion.p>
-        <motion.h2
-          initial={{ opacity: 0, y: 14 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.05 }}
-          className="font-display mt-2 text-3xl leading-none tracking-wide text-cream sm:text-4xl"
-        >
+        </p>
+        <h2 className="font-display mt-2 text-3xl leading-none tracking-wide text-cream sm:text-4xl">
           ARMA TU <span className="text-fire">COMBO</span>
-        </motion.h2>
-        <p className="mt-2 max-w-md text-[12.5px] leading-relaxed text-cream/45">
-          Elige base, acompañamiento y cóctel. Tu combo se arma al instante.
+        </h2>
+        <p className="mx-auto mt-2 max-w-md text-[12.5px] leading-relaxed text-cream/45">
+          Arma tu plato en tres toques. El precio se ajusta solo.
         </p>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[0.95fr_1.05fr] lg:items-stretch">
-        {/* ------------------------------ Composición ----------------------------- */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.96 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.6 }}
-          className="relative flex min-h-[320px] items-center justify-center overflow-hidden rounded-3xl border border-line bg-[radial-gradient(75%_65%_at_50%_18%,rgba(229,57,53,0.20),transparent_70%)] p-4 sm:min-h-[380px]"
-        >
-          <div className="pointer-events-none absolute inset-x-6 bottom-14 h-24 rounded-[50%] bg-black/60 blur-2xl" />
-
-          {/* Pila de capas */}
-          <div className="relative h-[240px] w-full max-w-[300px] sm:h-[290px]">
-            <AnimatePresence mode="popLayout">
-              {layers.map((layer, index) => (
-                <motion.div
-                  key={`${layer.key}-${layer.image}`}
-                  layout
-                  initial={{ opacity: 0, y: layer.y + 34, scale: layer.scale * 0.86, rotate: layer.rotate * 2 }}
-                  animate={{ opacity: 1, y: layer.y, scale: layer.scale, rotate: layer.rotate }}
-                  exit={{ opacity: 0, y: layer.y - 30, scale: layer.scale * 0.9 }}
-                  transition={{ type: 'spring', stiffness: 240, damping: 26, delay: index * 0.04 }}
-                  className="absolute left-1/2 top-1/2 -ml-[42%] w-[84%] overflow-hidden rounded-[28%] shadow-[0_22px_45px_-18px_rgba(0,0,0,0.95)]"
-                  style={{ zIndex: 10 + index }}
-                >
-                  <img
-                    src={layer.image}
-                    alt=""
-                    aria-hidden="true"
-                    className="aspect-square w-full object-cover"
-                    loading="lazy"
-                  />
-                  <div className="pointer-events-none absolute inset-0 rounded-[28%] ring-1 ring-inset ring-white/15" />
-                  <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/45 to-transparent" />
-                </motion.div>
-              ))}
-            </AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        className="relative overflow-hidden rounded-3xl border border-line bg-card/70"
+      >
+        {/* Cabecera del combo */}
+        <div className="relative flex flex-wrap items-center gap-3 border-b border-line/70 px-4 py-3.5 sm:px-5">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(90%_140%_at_0%_0%,rgba(229,57,53,0.16),transparent_60%)]" />
+          <div className="relative flex items-center gap-2">
+            <span className="grid h-8 w-8 place-items-center rounded-full bg-fire text-white">
+              <Sparkles size={15} />
+            </span>
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-cream/85">
+                Tu combo
+              </p>
+              <p className="text-[10px] text-cream/40">
+                {chosen.length} ingrediente{chosen.length === 1 ? '' : 's'}
+              </p>
+            </div>
           </div>
-
-          {/* Etiqueta flotante del total */}
-          <motion.div
-            key={total}
-            initial={{ opacity: 0, y: 8, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ type: 'spring', stiffness: 380, damping: 24 }}
-            className="absolute bottom-3 left-3 rounded-2xl border border-gold/30 bg-ink/80 px-3.5 py-2 backdrop-blur"
-          >
-            <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-cream/40">
-              Tu combo
-            </p>
-            <p className="flex items-baseline gap-1 text-gold">
-              <span className="text-[10px] font-semibold">S/</span>
-              <span className="font-display text-xl leading-none">{formatPrice(total)}</span>
-            </p>
-          </motion.div>
 
           <button
             type="button"
-            onClick={reset}
-            className="absolute bottom-3 right-3 inline-flex items-center gap-1.5 rounded-full border border-line bg-ink/70 px-3 py-1.5 text-[10px] font-semibold text-cream/50 backdrop-blur transition-colors hover:text-cream"
+            onClick={() => {
+              setSelection({ base: baseOptions[0], side: sideOptions[0], drink: drinkOptions[2] })
+              setStep('base')
+            }}
+            className="relative ml-auto inline-flex items-center gap-1.5 rounded-full border border-line bg-ink/60 px-3 py-1.5 text-[10px] font-semibold text-cream/50 transition-colors hover:text-cream"
           >
             <RotateCcw size={11} /> Reiniciar
           </button>
-        </motion.div>
+        </div>
 
-        {/* -------------------------------- Controles ------------------------------ */}
-        <div className="flex flex-col rounded-3xl border border-line bg-card/70 p-4 sm:p-5">
-          {/* Pasos */}
-          <div className="mb-4 flex gap-1.5">
-            {steps.map((s, i) => {
-              const active = step === s.key
-              return (
-                <motion.button
-                  key={s.key}
-                  type="button"
-                  onClick={() => setStep(s.key)}
-                  whileTap={{ scale: 0.96 }}
-                  className={`relative flex-1 rounded-xl px-2 py-2 text-[10.5px] font-bold uppercase tracking-wide transition-colors ${
-                    active ? 'text-white' : 'text-cream/40 hover:text-cream/70'
-                  }`}
+        <div className="grid gap-4 p-4 sm:p-5 lg:grid-cols-[0.92fr_1.08fr]">
+          {/* ---------- Plato que se descompone ---------- */}
+          <div className="relative flex flex-col items-center justify-center rounded-2xl border border-line/60 bg-[radial-gradient(70%_60%_at_50%_38%,rgba(251,140,0,0.14),transparent_70%)] p-4">
+            <div className="relative h-[168px] w-full max-w-[220px] sm:h-[200px]">
+              {/* Plato */}
+              <motion.div
+                aria-hidden="true"
+                animate={{ rotate: [0, 2.5, 0] }}
+                transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
+                className="absolute bottom-0 left-1/2 h-8 w-[86%] -translate-x-1/2 rounded-[50%] border border-white/10 bg-gradient-to-b from-[#2a2a2a] to-[#141414] shadow-[0_10px_24px_rgba(0,0,0,0.8)]"
+              />
+
+              {/* Base (protagonista) */}
+              <motion.div
+                key={`base-${selection.base.id}`}
+                initial={{ opacity: 0, y: 26, scale: 0.86 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ type: 'spring', stiffness: 260, damping: 22 }}
+                className="absolute inset-x-0 bottom-3 z-20 grid place-items-center"
+              >
+                <motion.img
+                  src={selection.base.id === 'pollo' ? '/img/pollo-cut.png' : '/img/alitas-cut.png'}
+                  alt={selection.base.name}
+                  className="w-[72%] drop-shadow-[0_18px_28px_rgba(0,0,0,0.75)]"
+                  whileHover={{ scale: 1.04 }}
+                />
+              </motion.div>
+
+              {/* Acompañamiento: entra desde la derecha */}
+              <AnimatePresence mode="popLayout">
+                <motion.div
+                  key={`side-${selection.side.id}`}
+                  initial={{ opacity: 0, x: 34, y: 12, rotate: 12, scale: 0.7 }}
+                  animate={{ opacity: 1, x: 0, y: 0, rotate: -8, scale: 1 }}
+                  exit={{ opacity: 0, x: 40, scale: 0.7 }}
+                  transition={{ type: 'spring', stiffness: 250, damping: 20, delay: 0.06 }}
+                  className="absolute bottom-4 left-0 z-30 w-[38%]"
                 >
-                  {active && (
-                    <motion.span
-                      layoutId="builderStep"
-                      transition={{ type: 'spring', stiffness: 400, damping: 32 }}
-                      className="absolute inset-0 rounded-xl bg-fire"
-                    />
-                  )}
-                  <span className="relative">
-                    {i + 1}. {s.label}
-                  </span>
-                </motion.button>
-              )
-            })}
-          </div>
+                  <img
+                    src={selection.side.id === 'makis' ? '/img/alitas-cut-sm.png' : '/img/chaufa-cut-sm.png'}
+                    alt={selection.side.name}
+                    className="drop-shadow-[0_12px_18px_rgba(0,0,0,0.7)]"
+                  />
+                </motion.div>
+              </AnimatePresence>
 
-          {/* Opciones del paso */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={current.key}
-              initial={{ opacity: 0, x: 18 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -18 }}
-              transition={{ duration: 0.22 }}
-              className="grid flex-1 gap-2"
-            >
-              {current.options.map((option) => {
-                const selected =
-                  (current.key === 'base' && base.id === option.id) ||
-                  (current.key === 'side' && side.id === option.id) ||
-                  (current.key === 'drink' && drink.id === option.id)
-
-                return (
-                  <motion.button
-                    key={option.id}
-                    type="button"
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => {
-                      if (current.key === 'base') setBase(option)
-                      if (current.key === 'side') setSide(option)
-                      if (current.key === 'drink') setDrink(option)
-                      const nextIndex = steps.findIndex((s) => s.key === current.key) + 1
-                      if (nextIndex < steps.length) {
-                        setTimeout(() => setStep(steps[nextIndex].key), 160)
-                      }
-                    }}
-                    className={`flex items-center gap-3 rounded-2xl border p-2 text-left transition-colors ${
-                      selected
-                        ? 'border-fire-orange/60 bg-fire-red/10'
-                        : 'border-line bg-ink-soft/50 hover:border-line/80 hover:bg-ink-soft'
-                    }`}
+              {/* Cóctel: entra desde arriba a la derecha */}
+              <AnimatePresence mode="popLayout">
+                {selection.drink.id !== 'sin-drink' && (
+                  <motion.div
+                    key={`drink-${selection.drink.id}`}
+                    initial={{ opacity: 0, y: -30, rotate: 10, scale: 0.6 }}
+                    animate={{ opacity: 1, y: 0, rotate: 8, scale: 1 }}
+                    exit={{ opacity: 0, y: -24, scale: 0.6 }}
+                    transition={{ type: 'spring', stiffness: 240, damping: 19 }}
+                    className="absolute -top-1 right-0 z-30 w-[30%]"
                   >
                     <img
-                      src={option.image}
-                      alt=""
-                      aria-hidden="true"
-                      className="h-12 w-12 shrink-0 rounded-xl object-cover"
-                      loading="lazy"
+                      src={selection.drink.id === 'laguna' ? '/img/azul-cut.png' : '/img/colada-cut-sm.png'}
+                      alt={selection.drink.name}
+                      className="drop-shadow-[0_14px_20px_rgba(0,0,0,0.7)]"
                     />
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate text-[13px] font-semibold text-cream">
-                        {option.name}
-                      </span>
-                      <span className="block truncate text-[10.5px] text-cream/40">
-                        {option.desc}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Chips de lo elegido */}
+            <div className="mt-3 flex flex-wrap justify-center gap-1.5">
+              <AnimatePresence mode="popLayout">
+                {chosen.map((item) => (
+                  <motion.span
+                    key={item.id}
+                    layout
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    className="inline-flex items-center gap-1 rounded-full border border-line bg-ink/70 px-2.5 py-1 text-[10px] font-medium text-cream/70"
+                  >
+                    <Check size={10} className="text-emerald-400" />
+                    {item.name}
+                  </motion.span>
+                ))}
+              </AnimatePresence>
+            </div>
+          </div>
+
+          {/* ---------- Selector ---------- */}
+          <div className="flex flex-col">
+            {/* Progreso por pasos */}
+            <div className="mb-3 flex items-center gap-1.5">
+              {steps.map((s, index) => {
+                const active = step === s.key
+                const done = index < activeIndex
+                return (
+                  <button
+                    key={s.key}
+                    type="button"
+                    onClick={() => setStep(s.key)}
+                    className={`group flex flex-1 flex-col gap-1.5 rounded-xl border px-2.5 py-2 text-left transition-colors ${
+                      active
+                        ? 'border-fire-orange/50 bg-fire-red/10'
+                        : 'border-line bg-ink-soft/40 hover:border-line/80'
+                    }`}
+                  >
+                    <span className="flex items-center gap-1.5">
+                      <s.Icon
+                        size={12}
+                        className={active ? 'text-fire-orange' : done ? 'text-emerald-400' : 'text-cream/35'}
+                      />
+                      <span
+                        className={`text-[10px] font-bold uppercase tracking-[0.1em] ${
+                          active ? 'text-cream' : 'text-cream/40'
+                        }`}
+                      >
+                        {s.label}
                       </span>
                     </span>
-                    <span className="shrink-0 text-right">
-                      <span className="block text-[12.5px] font-bold text-gold">
-                        {option.price > 0 ? `+ S/ ${formatPrice(option.price)}` : 'Gratis'}
-                      </span>
+                    <span className="h-0.5 w-full overflow-hidden rounded-full bg-line/80">
+                      <motion.span
+                        initial={false}
+                        animate={{ scaleX: active || done ? 1 : 0 }}
+                        transition={{ duration: 0.35, ease: 'easeOut' }}
+                        className={`block h-full origin-left rounded-full ${
+                          active ? 'bg-fire' : 'bg-emerald-400/70'
+                        }`}
+                      />
                     </span>
-                    <span
-                      className={`grid h-6 w-6 shrink-0 place-items-center rounded-full border ${
-                        selected
-                          ? 'border-fire bg-fire text-white'
-                          : 'border-line text-transparent'
-                      }`}
-                    >
-                      <Check size={13} strokeWidth={3.5} />
-                    </span>
-                  </motion.button>
+                  </button>
                 )
               })}
-            </motion.div>
-          </AnimatePresence>
+            </div>
 
-          <p className="mt-3 text-[10px] leading-relaxed text-cream/25">{builderNote}</p>
-
-          <motion.button
-            type="button"
-            onClick={handleAdd}
-            whileTap={{ scale: 0.97 }}
-            whileHover={{ y: -1 }}
-            className="mt-3 flex w-full items-center justify-center gap-2 rounded-2xl bg-fire px-4 py-3.5 text-[12.5px] font-extrabold uppercase tracking-wide text-white shadow-fire"
-          >
-            <AnimatePresence mode="wait" initial={false}>
-              {added ? (
-                <motion.span
-                  key="ok"
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  className="flex items-center gap-2"
-                >
-                  <Check size={16} strokeWidth={3} /> ¡Combo agregado!
-                </motion.span>
-              ) : (
-                <motion.span
-                  key="add"
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  className="flex items-center gap-2"
-                >
-                  <ShoppingBag size={16} /> Agregar combo · S/ {formatPrice(total)}
-                </motion.span>
-              )}
+            {/* Opciones */}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={step}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.2 }}
+                className="grid gap-2"
+              >
+                {steps
+                  .find((s) => s.key === step)
+                  .options.map((option) => {
+                    const selected = selection[step]?.id === option.id
+                    return (
+                      <motion.button
+                        key={option.id}
+                        type="button"
+                        whileTap={{ scale: 0.985 }}
+                        onClick={() => pick(step, option)}
+                        className={`flex items-center gap-2.5 rounded-xl border p-2.5 text-left transition-colors ${
+                          selected
+                            ? 'border-fire-orange/55 bg-fire-red/10'
+                            : 'border-line bg-ink-soft/40 hover:border-line/80'
+                        }`}
+                      >
+                        <span
+                          className={`grid h-5 w-5 shrink-0 place-items-center rounded-full border ${
+                            selected
+                              ? 'border-fire bg-fire text-white'
+                              : 'border-line text-transparent'
+                          }`}
+                        >
+                          <Check size={11} strokeWidth={4} />
+                        </span>
+                        <span className="min-w-0 flex-1">
+                          <span className="block truncate text-[12.5px] font-semibold text-cream">
+                            {option.name}
+                          </span>
+                          <span className="block truncate text-[10px] text-cream/40">
+                            {option.desc}
+                          </span>
+                        </span>
+                        <span className="shrink-0 text-[11.5px] font-bold text-gold">
+                          {option.price > 0 ? `+ S/ ${formatPrice(option.price)}` : 'Gratis'}
+                        </span>
+                      </motion.button>
+                    )
+                  })}
+              </motion.div>
             </AnimatePresence>
-          </motion.button>
+
+            <p className="mt-3 text-[9.5px] leading-relaxed text-cream/25">{builderNote}</p>
+
+            {/* Total + acción */}
+            <div className="mt-auto flex items-center gap-2.5 pt-3">
+              <div className="shrink-0">
+                <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-cream/35">
+                  Total
+                </p>
+                <AnimatePresence mode="popLayout" initial={false}>
+                  <motion.p
+                    key={total}
+                    initial={{ y: 8, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: -8, opacity: 0 }}
+                    className="flex items-baseline gap-1 text-gold"
+                  >
+                    <span className="text-[10px] font-semibold">S/</span>
+                    <span className="font-display text-2xl leading-none tracking-wide">
+                      {formatPrice(total)}
+                    </span>
+                  </motion.p>
+                </AnimatePresence>
+              </div>
+
+              <motion.button
+                type="button"
+                onClick={handleAdd}
+                whileTap={{ scale: 0.97 }}
+                whileHover={{ y: -1 }}
+                className="ml-auto inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-fire px-4 py-3 text-[11.5px] font-extrabold uppercase tracking-wide text-white shadow-fire sm:text-xs"
+              >
+                <AnimatePresence mode="wait" initial={false}>
+                  {added ? (
+                    <motion.span
+                      key="ok"
+                      initial={{ opacity: 0, y: 6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -6 }}
+                      className="flex items-center gap-2"
+                    >
+                      <Check size={15} strokeWidth={3} /> ¡Agregado!
+                    </motion.span>
+                  ) : (
+                    <motion.span
+                      key="add"
+                      initial={{ opacity: 0, y: 6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -6 }}
+                      className="flex items-center gap-2"
+                    >
+                      <ShoppingBag size={15} /> Agregar al pedido
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </motion.button>
+            </div>
+          </div>
         </div>
-      </div>
+      </motion.div>
     </section>
   )
 }

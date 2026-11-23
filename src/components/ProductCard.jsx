@@ -40,33 +40,35 @@ export default function ProductCard({
       className="group relative flex flex-col overflow-hidden rounded-2xl border border-line bg-card/85 backdrop-blur-sm shadow-card sm:rounded-3xl"
       aria-labelledby={`product-${product.id}`}
     >
-      {/* Imagen */}
-      <div className="relative aspect-[4/3] overflow-hidden bg-ink-soft">
+      {/* Imagen: recorte sin fondo sobre spotlight */}
+      <div className="relative aspect-[5/4] overflow-hidden">
+        <div className="absolute inset-x-[14%] bottom-[10%] h-[22%] rounded-[50%] bg-black/60 blur-lg" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_62%,rgba(251,140,0,0.18),rgba(229,57,53,0.08)_45%,transparent_72%)]" />
+
         <motion.img
-          src={product.image}
+          src={product.cutout || product.image}
           alt={product.name}
           loading={index < 4 ? 'eager' : 'lazy'}
           decoding="async"
-          className="h-full w-full object-cover"
-          initial={{ scale: 1.08 }}
-          whileInView={{ scale: 1 }}
+          className="relative z-10 h-full w-full object-contain drop-shadow-[0_18px_26px_rgba(0,0,0,0.65)]"
+          fetchPriority={index < 2 ? 'high' : 'auto'}
+          initial={{ opacity: 0, scale: 0.86, y: 12 }}
+          whileInView={{ opacity: 1, scale: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          whileHover={{ scale: 1.06 }}
+          transition={{ type: 'spring', stiffness: 190, damping: 20, delay: Math.min(index, 3) * 0.05 }}
+          whileHover={{ scale: 1.06, y: -4 }}
         />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-card via-card/10 to-transparent" />
 
         {/* Etiqueta destacada */}
         {product.badge && (
-          <div className="absolute left-1.5 top-1.5 inline-flex max-w-[calc(100%-0.75rem)] items-center gap-1 rounded-full border border-gold/30 bg-ink/75 px-1.5 py-0.5 text-[8.5px] font-bold uppercase tracking-[0.06em] text-gold backdrop-blur sm:left-3 sm:top-3 sm:gap-1.5 sm:px-2.5 sm:py-1 sm:text-[10px] sm:tracking-[0.12em]">
+          <div className="absolute left-1.5 top-1.5 z-20 inline-flex max-w-[calc(100%-0.75rem)] items-center gap-1 rounded-full border border-gold/30 bg-ink/80 px-1.5 py-0.5 text-[8.5px] font-bold uppercase tracking-[0.06em] text-gold backdrop-blur sm:left-3 sm:top-3 sm:gap-1.5 sm:px-2.5 sm:py-1 sm:text-[10px] sm:tracking-[0.12em]">
             <Flame size={8} className="shrink-0 sm:hidden" />
             <Flame size={11} className="hidden shrink-0 sm:block" />
             <span className="truncate">{product.badge}</span>
           </div>
         )}
 
-        {/* Etiqueta de precio referencial (pill, pantallas medianas+) */}
-        <div className="absolute right-3 top-3 hidden rounded-full bg-ink/70 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-cream/55 backdrop-blur sm:block">
+        <div className="absolute right-3 top-3 z-20 hidden rounded-full bg-ink/70 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-cream/55 backdrop-blur sm:block">
           Precio referencial
         </div>
       </div>
