@@ -87,7 +87,22 @@ Si el botón no abre el importador, entra a [vercel.com/new](https://vercel.com/
 
 > **Rama de producción:** la rama `main` despliega a producción. Mientras revises el diseño, la rama `arena/d92c3304-alitas-de-barrio` genera una **Preview URL** automática en cada push; cuando esté aprobado, ese PR a `main` publica los cambios en la URL de producción.
 
-También desde la CLI:
+### Publicar cambios con un comando
+
+El proyecto tiene un **Deploy Hook** de Vercel configurado en `.env.local` (no se sube al repo):
+
+```bash
+npm run deploy    # pide a Vercel que compila el último commit
+npm run ship      # build local + deploy
+```
+
+Tras el push, ejecuta `npm run deploy` y en 1–2 minutos el sitio queda actualizado.
+También se puede disparar pegando la URL del hook en el navegador.
+
+> El hook se crea en **Vercel → Settings → Git → Deploy Hooks** (rama `arena/d92c3304-alitas-de-barrio`)
+> y se guarda como `VERCEL_DEPLOY_HOOK=...` en `.env.local`.
+
+También desde la CLI oficial:
 
 ```bash
 npm i -g vercel
