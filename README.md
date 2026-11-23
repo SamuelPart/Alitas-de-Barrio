@@ -71,12 +71,20 @@ Requiere **Node.js 18+** (recomendado 20/22).
 
 ## ☁️ Despliegue en Vercel
 
-El proyecto ya incluye `vercel.json`, por lo que la detección es automática:
+El proyecto ya incluye `vercel.json`, `engines.node >= 20` y `.nvmrc` (22), por lo que la detección es automática.
 
-1. Sube el repositorio a GitHub.
-2. En [vercel.com](https://vercel.com) → **Add New… → Project** → importa el repo.
-3. Framework preset: **Vite** · Build Command: `npm run build` · Output Directory: `dist`.
+### Import de un clic (recomendado)
+
+👉 **[Importar Alitas Barrio en Vercel](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FSamuelPart%2FAlitas-de-Barrio&project-name=alitas-barrio&repository-name=alitas-barrio&framework=vite&build-command=npm%20run%20build&output-directory=dist)**
+
+Si el botón no abre el importador, entra a [vercel.com/new](https://vercel.com/new) e importa `SamuelPart/Alitas-de-Barrio`:
+
+1. Framework preset: **Vite** (se detecta solo)
+2. Build Command: `npm run build`
+3. Output Directory: `dist`
 4. **Deploy**. ✅
+
+> **Rama de producción:** la rama `main` despliega a producción. Mientras revises el diseño, la rama `arena/d92c3304-alitas-de-barrio` genera una **Preview URL** automática en cada push; cuando esté aprobado, ese PR a `main` publica los cambios en la URL de producción.
 
 También desde la CLI:
 
