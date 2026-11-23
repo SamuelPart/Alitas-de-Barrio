@@ -11,6 +11,7 @@ import {
   Store,
   UtensilsCrossed,
   ChefHat,
+  Maximize2,
 } from 'lucide-react'
 import { business, whatsappUrl } from '../data/business'
 import Embers from './Embers'
@@ -158,7 +159,7 @@ export function HowToOrder() {
 }
 
 /* ---------------------------------- Info ----------------------------------- */
-export function InfoSection() {
+export function InfoSection({ onOpenQr }) {
   const cards = [
     {
       Icon: Clock,
@@ -217,19 +218,26 @@ export function InfoSection() {
           </motion.p>
 
           {/* QR de la carta */}
-          <motion.div
+          <motion.button
+            type="button"
             variants={reveal}
-            className="mt-6 flex items-center gap-3.5 rounded-2xl border border-line bg-card/60 p-3"
+            onClick={onOpenQr}
+            whileTap={{ scale: 0.985 }}
+            whileHover={{ y: -2 }}
+            className="group mt-6 flex w-full items-center gap-3.5 rounded-2xl border border-line bg-card/60 p-3 text-left transition-colors hover:border-fire-orange/35"
+            aria-label="Ampliar el código QR de la carta"
           >
-            <img
+            <motion.img
               src="/img/qr-carta.png"
               alt="Código QR de la carta digital de Alitas Barrio"
               width="92"
               height="92"
               loading="lazy"
-              className="h-[76px] w-[76px] shrink-0 rounded-xl border border-line/70 sm:h-[88px] sm:w-[88px]"
+              whileHover={{ scale: 1.06, rotate: -1 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+              className="h-[76px] w-[76px] shrink-0 rounded-xl border border-line/70 transition-shadow group-hover:shadow-[0_10px_24px_-10px_rgba(251,140,0,0.7)] sm:h-[88px] sm:w-[88px]"
             />
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-fire-orange">
                 Escanea y pide
               </p>
@@ -237,10 +245,13 @@ export function InfoSection() {
                 Abre la carta en tu celular
               </p>
               <p className="mt-0.5 text-[11px] leading-relaxed text-cream/40">
-                Apunta la cámara al QR o compártelo con quien vaya a pedir.
+                Toca el QR para ampliarlo, descargarlo o compartirlo.
               </p>
             </div>
-          </motion.div>
+            <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-line bg-ink/60 text-cream/40 transition-colors group-hover:border-fire-orange/40 group-hover:text-fire-orange">
+              <Maximize2 size={14} />
+            </span>
+          </motion.button>
 
           <motion.div variants={reveal} className="mt-3 space-y-2.5">
             {cards.map(({ Icon, label, value, hint, href }) => {

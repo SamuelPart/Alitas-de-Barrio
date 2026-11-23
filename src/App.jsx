@@ -10,6 +10,7 @@ import CartBar from './components/CartBar'
 import OrderDrawer from './components/OrderDrawer'
 import ComboBuilder from './components/ComboBuilder'
 import Showcase from './components/Showcase'
+import QrLightbox from './components/QrLightbox'
 import ScrollTopButton from './components/ScrollTopButton'
 import WhatsappFab from './components/WhatsappFab'
 import { Features, HowToOrder, InfoSection, Footer } from './components/Sections'
@@ -23,6 +24,7 @@ export default function App() {
   const [category, setCategory] = useState('todos')
   const [query, setQuery] = useState('')
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [qrOpen, setQrOpen] = useState(false)
 
   const {
     items,
@@ -191,15 +193,16 @@ export default function App() {
 
         <Features />
         <HowToOrder />
-        <InfoSection />
+        <InfoSection onOpenQr={() => setQrOpen(true)} />
       </main>
 
       <Footer onOpenCart={openDrawer} count={count} />
 
       {/* Capa flotante */}
-      <CartBar count={count} total={total} onOpen={openDrawer} />
+      <CartBar count={count} total={total} onOpen={openDrawer} hidden={qrOpen} />
       <ScrollTopButton />
       <WhatsappFab lifted={count > 0} />
+      <QrLightbox open={qrOpen} onClose={() => setQrOpen(false)} />
       <OrderDrawer
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}

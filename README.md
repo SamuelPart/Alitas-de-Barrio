@@ -176,6 +176,10 @@ El QR apunta a **https://debarrioalitas.vercel.app**, con los módulos redondead
 | `design/qr-carta-print-3000.png` | Impresión: flyers, stickers, mesa (3000 px) |
 | `public/img/qr-carta-dark.png` | Versión oscura para pantallas del local |
 
+El QR de la web es **clicable**: abre un visor en primer plano con animación de zoom,
+destello de barrido y botones para **descargar** el PNG, **compartir** (usa la hoja nativa del
+celular con la imagen adjunta y cae a "copiar enlace" en navegadores sin soporte) o copiar la URL.
+
 Para regenerarlo (por ejemplo con otro dominio):
 
 ```bash

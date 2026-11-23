@@ -5,10 +5,10 @@ import { formatPrice } from '../utils/format'
 /**
  * Barra flotante inferior con blur: contador, total y acceso al pedido.
  */
-export default function CartBar({ count, total, onOpen }) {
+export default function CartBar({ count, total, onOpen, hidden = false }) {
   return (
     <AnimatePresence>
-      {count > 0 && (
+      {count > 0 && !hidden && (
         <motion.div
           initial={{ y: 110, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
