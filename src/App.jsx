@@ -149,7 +149,7 @@ export default function App() {
 
           <motion.div
             layout
-            className="mt-5 grid grid-cols-1 gap-4 pb-10 sm:grid-cols-2 lg:grid-cols-3"
+            className="mt-4 grid grid-cols-2 gap-2.5 pb-10 sm:mt-5 sm:gap-4 lg:grid-cols-3"
           >
             <AnimatePresence mode="popLayout">
               {filtered.map((product, index) => (
